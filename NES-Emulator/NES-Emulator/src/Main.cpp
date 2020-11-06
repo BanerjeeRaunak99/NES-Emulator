@@ -1,8 +1,13 @@
 #include <SFML/Graphics.hpp>
 
+#include "stdafx.h"
+
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+	std::string msg("This is the NES Emulator!!");
+	std::cout << msg << '\n';
+
+	sf::RenderWindow window(sf::VideoMode(640, 480), "NES Emulator | By ramizkhan99 & BanerjeeRaunak97");
 	sf::CircleShape shape(100.f);
 	sf::err().rdbuf(NULL);
 	shape.setFillColor(sf::Color::Green);
