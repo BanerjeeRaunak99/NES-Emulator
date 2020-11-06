@@ -348,7 +348,7 @@ healthchecksdb
 bin-int/
 
 # Visual Studio files and folder
-.vs/
+*/.vs/
 **.sln
 **.vcxproj
 **.vcxproj.filters
