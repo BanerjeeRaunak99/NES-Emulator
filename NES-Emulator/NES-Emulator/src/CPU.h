@@ -11,7 +11,7 @@ namespace NES
 		~CPU();
 
 	private:
-
+		[[nodiscard]] constexpr bool get() { return false; }
 	};
 }
 
