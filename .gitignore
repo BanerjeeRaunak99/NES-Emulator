@@ -344,7 +344,7 @@ healthchecksdb
   
 # Binaries
 **/bin/
-!vendor/premake/bin/
+!Dependencies/premake/bin/
 bin-int/
 
 # Visual Studio files and folder
