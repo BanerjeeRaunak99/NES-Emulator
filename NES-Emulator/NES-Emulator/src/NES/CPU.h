@@ -1,7 +1,7 @@
 #pragma once
 
 // TODO: Implement CPU functionality
-#include <stdint.h>
+#include "stdafx.h"
 
 namespace NES
 {
