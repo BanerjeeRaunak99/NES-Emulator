@@ -3,6 +3,8 @@
 #include "NES/Emulator.h"
 #include "NES/stdafx.h"
 
+// #TODO: Make a logger no matter what
+
 int main()
 {
 	std::string msg("This is the NES Emulator!!");

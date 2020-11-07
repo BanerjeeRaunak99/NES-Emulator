@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Bus.h"
 
 namespace NES
 {
@@ -8,20 +9,25 @@ namespace NES
 	{
 	public:
 		CPU();
-		~CPU();
+		~CPU() = default;
 
-		bool LoadRom(const char* path);
+		inline void ConnectBus(Bus* bus) { m_bus = bus; }
+		uint8_t read(const uint16_t address) const;
+		void write(const uint16_t address, const uint8_t data);
 
 	private:
-		// memory 2K
+		// The main bus
+		Bus* m_bus = nullptr;
+
+		// Memory 2K
 		uint8_t m_memory[2048];
 
-		// general purpose registers
+		// General purpose registers
 		uint8_t m_a;
 		uint8_t m_x;
 		uint8_t m_y;
 
-		// status register
+		// Status register
 		uint8_t m_p;
 
 		// Stack pointer
