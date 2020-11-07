@@ -5,6 +5,11 @@
 namespace NES
 {
 	class Emulator
-	{};
+	{
+	public:
+
+	private:
+
+	};
 }
 

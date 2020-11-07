@@ -1,6 +1,5 @@
 #pragma once
 
-// TODO: Implement CPU functionality
 #include "stdafx.h"
 
 namespace NES
@@ -11,28 +10,25 @@ namespace NES
 		CPU();
 		~CPU();
 
+		bool LoadRom(const char* path);
+
 	private:
-		[[nodiscard]] constexpr bool get() { return false; }
+		// memory 2K
+		uint8_t m_memory[2048];
 
-		/*memory 2K*/
-		uint8_t memory[2048];
-
-
-		/*general purpose registers*/
+		// general purpose registers
 		uint8_t m_a;
 		uint8_t m_x;
 		uint8_t m_y;
-		
-		/*status register*/
+
+		// status register
 		uint8_t m_p;
 
-		/*Stack pointer*/
+		// Stack pointer
 		uint8_t m_sp;
 
-		/* Program counter */
+		// Program counter
 		uint16_t m_pc;
-
-
 	};
 }
 

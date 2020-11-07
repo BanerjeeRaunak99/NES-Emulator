@@ -1,8 +1,7 @@
 #include <SFML/Graphics.hpp>
 
-#include "NES/CPU.h"
-
-#include "stdafx.h"
+#include "NES/Emulator.h"
+#include "NES/stdafx.h"
 
 int main()
 {
