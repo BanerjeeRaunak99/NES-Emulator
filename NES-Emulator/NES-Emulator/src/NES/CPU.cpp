@@ -12,12 +12,12 @@ namespace NES
 
 	uint8_t CPU::read(const uint16_t address) const
 	{
-		return bus->read(address);
+		return m_bus->read(address);
 	}
 
 	void CPU::write(const uint16_t address, const uint8_t data)
 	{
-		bus->write(address, data);
+		m_bus->write(address, data);
 	}
 
 }
