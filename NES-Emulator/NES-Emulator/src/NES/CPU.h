@@ -19,18 +19,18 @@ namespace NES
 
 
 		/*general purpose registers*/
-		uint8_t a;
-		uint8_t x;
-		uint8_t y;
+		uint8_t m_a;
+		uint8_t m_x;
+		uint8_t m_y;
 		
 		/*status register*/
-		uint8_t p;
+		uint8_t m_p;
 
 		/*Stack pointer*/
-		uint8_t sp;
+		uint8_t m_sp;
 
 		/* Program counter */
-		uint16_t pc;
+		uint16_t m_pc;
 
 
 	};
