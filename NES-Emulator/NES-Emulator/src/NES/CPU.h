@@ -81,7 +81,7 @@ namespace NES
 		uint8_t XXX();
 
 		//External signals
-		void clock(); //clock signal
+		void Clock(); //clock signal
 		void reset(); //reset signal
 		void irq(); // interrupt request signal
 		void nmi(); // non maskable interrupt request signal
