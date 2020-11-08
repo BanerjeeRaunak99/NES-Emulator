@@ -54,4 +54,18 @@ namespace NES
 			m_status &= ~flags;
 	}
 
+	void CPU::Clock()
+	{
+		if (m_cycles == 0) 
+		{
+			m_opcode = read(m_pc++);
+			//extract number of cycles from lookup table
+			m_cycles = lookup[m_opcode].cycles;
+			uint8_t additionalcycle1 = (this->*lookup[m_opcode].addrmode)();
+			uint8_t additionalcycle2 = (this->*lookup[m_opcode].operate)();
+			m_cycles += (additionalcycle1 & additionalcycle2);
+		}
+		m_cycles--;
+	}
+
 }
