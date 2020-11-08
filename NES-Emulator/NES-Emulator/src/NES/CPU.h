@@ -3,15 +3,17 @@
 #include "stdafx.h"
 #include "Bus.h"
 
-namespace NES
+namespace nes
 {
+	class Bus;
+
 	class CPU
 	{
 	public:
 		CPU();
 		~CPU() = default;
 
-		inline void ConnectBus(Bus* bus) { m_bus = bus; }
+		void ConnectBus(Bus* bus);
 
 	private:
 		// The main bus

@@ -1,7 +1,7 @@
 #include "CPU.h"
 #include "stdafx.h"
 
-namespace NES
+namespace nes
 {
 	CPU::CPU()
 		: m_memory{}, m_a(0x00), m_x(0x00), m_y(0x00), m_status(0x00), m_sp(0x00), m_pc(0x00)
@@ -28,8 +28,10 @@ namespace NES
 		};
 	}
 
-	CPU::~CPU()
-	{}
+	void CPU::ConnectBus(Bus* bus)
+	{
+		m_bus = bus;
+	}
 
 	uint8_t CPU::Read(const uint16_t address) const
 	{
@@ -55,7 +57,6 @@ namespace NES
 	}
 
 	//Addressing modes
-
 	uint8_t CPU::IMP()
 	{
 		m_fetched = m_a;
@@ -89,6 +90,7 @@ namespace NES
 		m_addr_abs &= 0x00FF;
 		return 0;
 	}
+
 	uint8_t CPU::ABS()
 	{
 		uint8_t low = Read(m_pc++);
@@ -97,37 +99,40 @@ namespace NES
 		return 0;
 
 	}
+
 	uint8_t CPU::ABX()
 	{
 		uint8_t low = Read(m_pc++);
 		uint8_t high = Read(m_pc++);
 		m_addr_abs = (high << 8) | low;
 		m_addr_abs += m_x;
-		if ((m_addr_abs & 0xFF00) != (high << 8))
+		if ( (m_addr_abs & 0xFF00) != (high << 8) )
 			return 1;
 		else
 			return 0;
 
 	}
+
 	uint8_t CPU::ABY()
 	{
 		uint8_t low = Read(m_pc++);
 		uint8_t high = Read(m_pc++);
 		m_addr_abs = (high << 8) | low;
 		m_addr_abs += m_y;
-		if ((m_addr_abs & 0xFF00) != (high << 8))
+		if ( (m_addr_abs & 0xFF00) != (high << 8) )
 			return 1;
 		else
 			return 0;
 
 	}
+
 	uint8_t CPU::IND()
 	{
 		uint8_t ptr_low = Read(m_pc++);
 		uint8_t ptr_high = Read(m_pc++);
 		uint16_t ptr = (ptr_high << 8) | ptr_low;
-		
-		if (ptr_low == 0x00FF) //bug in hardware
+
+		if ( ptr_low == 0x00FF ) //bug in hardware
 		{
 			m_addr_abs = (Read(ptr & 0xFF00) << 8) | Read(ptr + 0);
 		}
@@ -135,8 +140,11 @@ namespace NES
 		{
 			m_addr_abs = (Read(ptr + 1) << 8) | Read(ptr + 0);
 		}
+
+		return 0;
 	}
-	uint8_t CPU::IZX() 
+
+	uint8_t CPU::IZX()
 	{
 		uint16_t ptr = Read(m_pc++);
 		uint16_t low = Read((uint16_t)(ptr + (uint16_t)m_x) & 0x00FF);
@@ -146,6 +154,7 @@ namespace NES
 
 		return 0;
 	}
+
 	uint8_t CPU::IZY()
 	{
 		uint16_t ptr = Read(m_pc++);
@@ -155,20 +164,17 @@ namespace NES
 		m_addr_abs = (high << 8) | low;
 		m_addr_abs += m_y;
 
-		if ((m_addr_abs & 0xFF00) != (high << 8))
+		if ( (m_addr_abs & 0xFF00) != (high << 8) )
 			return 1;
 		else
 			return 0;
 	}
+
 	uint8_t CPU::REL()
 	{
 		m_addr_rel = Read(m_pc++);
-		if (m_addr_rel & 0x80)
+		if ( m_addr_rel & 0x80 )
 			m_addr_rel |= 0xFF00;
 		return 0;
-
 	}
-
-
-
 }

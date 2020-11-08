@@ -2,7 +2,7 @@
 
 #include "CPU.h"
 
-namespace NES
+namespace nes
 {
 	class Bus
 	{
@@ -15,7 +15,6 @@ namespace NES
 
 	private:
 		std::array<uint16_t, 64 * 1024> ram;
-
 	};
 }
 

@@ -1,6 +1,6 @@
 #include "Bus.h"
 
-namespace NES
+namespace nes
 {
 	Bus::Bus() : ram{}
 	{}
