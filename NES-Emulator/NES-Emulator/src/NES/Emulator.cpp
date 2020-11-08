@@ -1,6 +1,6 @@
 #include "Emulator.h"
 
-namespace
+namespace NES
 {
 
 }

@@ -47,18 +47,18 @@ namespace NES
 		// Status register
 		uint8_t m_status;
 
-		//Adressing Modes
-		uint8_t IMP();	
-		uint8_t IMM();
-		uint8_t ZP0();	
-		uint8_t ZPX();
-		uint8_t ZPY();	
+		// Addressing Modes
+		uint8_t IMP();	// Implied
+		uint8_t IMM();	// Immediate
+		uint8_t ZP0();	// Zero page
+		uint8_t ZPX();	// Zero Page with X offset
+		uint8_t ZPY();
 		uint8_t REL();
-		uint8_t ABS();	
+		uint8_t ABS();
 		uint8_t ABX();
-		uint8_t ABY();	
+		uint8_t ABY();
 		uint8_t IND();
-		uint8_t IZX();	
+		uint8_t IZX();
 		uint8_t IZY();
 
 		//opcodes
@@ -83,14 +83,14 @@ namespace NES
 		//External signals
 		void clock(); //clock signal
 		void reset(); //reset signal
-		void irq(); // interupt resquest signal
-		void nmi(); // non maskable interupt request signal
+		void irq(); // interrupt request signal
+		void nmi(); // non maskable interrupt request signal
 
 		//methods used to fetch data
 		uint8_t fetch();
 		uint8_t m_fetched;
 
-		// Variables to store absoulte and relative addresses
+		// Variables to store absolute and relative addresses
 		uint8_t m_addr_abs;
 		uint8_t m_addr_rel;
 
@@ -101,19 +101,19 @@ namespace NES
 		uint8_t m_cycles;
 
 		// Methods to read from and write to the bus
-		uint8_t read(const uint16_t address) const;
-		void write(const uint16_t address, const uint8_t data) const;
+		uint8_t Read(const uint16_t address) const;
+		void Write(const uint16_t address, const uint8_t data) const;
 
 		// Methods for the status register
 		uint8_t GetFlag(const FLAGS flags) const;
 		void SetFlag(FLAGS flags, bool value);
 
 		//struct to handle instructions
-		struct INSTRUCTION 
+		struct INSTRUCTION
 		{
 			std::string name;
-			uint8_t(CPU::*operate)(void) = nullptr;
-			uint8_t(CPU::*addrmode)(void) = nullptr;
+			uint8_t(CPU::* operate)(void) = nullptr;
+			uint8_t(CPU::* addrmode)(void) = nullptr;
 			uint8_t cycles = 0;
 
 		};

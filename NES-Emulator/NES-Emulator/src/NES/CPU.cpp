@@ -31,12 +31,12 @@ namespace NES
 	CPU::~CPU()
 	{}
 
-	uint8_t CPU::read(const uint16_t address) const
+	uint8_t CPU::Read(const uint16_t address) const
 	{
 		return m_bus->read(address);
 	}
 
-	void CPU::write(const uint16_t address, const uint8_t data) const
+	void CPU::Write(const uint16_t address, const uint8_t data) const
 	{
 		m_bus->write(address, data);
 	}
@@ -52,6 +52,37 @@ namespace NES
 			m_status |= flags;
 		else
 			m_status &= ~flags;
+	}
+
+	uint8_t CPU::IMP()
+	{
+		m_fetched = m_a;
+		return 0;
+	}
+
+	uint8_t CPU::IMM()
+	{
+		m_addr_abs = m_pc++;
+		return 0;
+	}
+
+	uint8_t CPU::ZP0()
+	{
+		m_addr_abs = Read(m_pc);
+		return 0;
+	}
+
+	uint8_t CPU::ZPX()
+	{
+		m_addr_abs = Read(m_pc) + m_x;
+		m_pc++;
+		m_addr_abs &= 0x00FF;
+		return 0;
+	}
+
+	uint8_t CPU::ZPY()
+	{
+		return uint8_t();
 	}
 
 }
