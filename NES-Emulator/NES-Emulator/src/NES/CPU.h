@@ -117,7 +117,7 @@ namespace NES
 			uint8_t cycles = 0;
 
 		};
-		std::vector<INSTRUCTION> lookup
+		std::vector<INSTRUCTION> lookup;
 	};
 }
 
