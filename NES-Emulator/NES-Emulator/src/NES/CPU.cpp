@@ -54,6 +54,8 @@ namespace NES
 			m_status &= ~flags;
 	}
 
+	//Addressing modes
+
 	uint8_t CPU::IMP()
 	{
 		m_fetched = m_a;
@@ -82,7 +84,91 @@ namespace NES
 
 	uint8_t CPU::ZPY()
 	{
-		return uint8_t();
+		m_addr_abs = Read(m_pc) + m_y;
+		m_pc++;
+		m_addr_abs &= 0x00FF;
+		return 0;
 	}
+	uint8_t CPU::ABS()
+	{
+		uint8_t low = Read(m_pc++);
+		uint8_t high = Read(m_pc++);
+		m_addr_abs = (high << 8) | low;
+		return 0;
+
+	}
+	uint8_t CPU::ABX()
+	{
+		uint8_t low = Read(m_pc++);
+		uint8_t high = Read(m_pc++);
+		m_addr_abs = (high << 8) | low;
+		m_addr_abs += m_x;
+		if ((m_addr_abs & 0xFF00) != (high << 8))
+			return 1;
+		else
+			return 0;
+
+	}
+	uint8_t CPU::ABY()
+	{
+		uint8_t low = Read(m_pc++);
+		uint8_t high = Read(m_pc++);
+		m_addr_abs = (high << 8) | low;
+		m_addr_abs += m_y;
+		if ((m_addr_abs & 0xFF00) != (high << 8))
+			return 1;
+		else
+			return 0;
+
+	}
+	uint8_t CPU::IND()
+	{
+		uint8_t ptr_low = Read(m_pc++);
+		uint8_t ptr_high = Read(m_pc++);
+		uint16_t ptr = (ptr_high << 8) | ptr_low;
+		
+		if (ptr_low == 0x00FF) //bug in hardware
+		{
+			m_addr_abs = (Read(ptr & 0xFF00) << 8) | Read(ptr + 0);
+		}
+		else
+		{
+			m_addr_abs = (Read(ptr + 1) << 8) | Read(ptr + 0);
+		}
+	}
+	uint8_t CPU::IZX() 
+	{
+		uint16_t ptr = Read(m_pc++);
+		uint16_t low = Read((uint16_t)(ptr + (uint16_t)m_x) & 0x00FF);
+		uint16_t high = Read((uint16_t)(ptr + (uint16_t)m_x + 1) & 0x00FF);
+
+		m_addr_abs = (high << 8) | low;
+
+		return 0;
+	}
+	uint8_t CPU::IZY()
+	{
+		uint16_t ptr = Read(m_pc++);
+		uint16_t low = Read(ptr & 0x00FF);
+		uint16_t high = Read((ptr + 1) & 0x00FF);
+
+		m_addr_abs = (high << 8) | low;
+		m_addr_abs += m_y;
+
+		if ((m_addr_abs & 0xFF00) != (high << 8))
+			return 1;
+		else
+			return 0;
+	}
+	uint8_t CPU::REL()
+	{
+		m_addr_rel = Read(m_pc++);
+		if (m_addr_rel & 0x80)
+			m_addr_rel |= 0xFF00;
+		return 0;
+
+	}
+
+
 
 }

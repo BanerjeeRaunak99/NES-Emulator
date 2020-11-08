@@ -52,14 +52,14 @@ namespace NES
 		uint8_t IMM();	// Immediate
 		uint8_t ZP0();	// Zero page
 		uint8_t ZPX();	// Zero Page with X offset
-		uint8_t ZPY();
-		uint8_t REL();
-		uint8_t ABS();
-		uint8_t ABX();
-		uint8_t ABY();
-		uint8_t IND();
-		uint8_t IZX();
-		uint8_t IZY();
+		uint8_t ZPY();	//Zero Page with Y offset
+		uint8_t REL();	//Relative
+		uint8_t ABS();	//Absolute 
+		uint8_t ABX();	//Absolute  with X offset
+		uint8_t ABY();	//Absolute	with Y offset
+		uint8_t IND();	//Indirect 
+		uint8_t IZX();	//Indirect with X offset
+		uint8_t IZY();	//Indirect with Y offset
 
 		//opcodes
 		uint8_t ADC();	uint8_t AND();	uint8_t ASL();	uint8_t BCC();
