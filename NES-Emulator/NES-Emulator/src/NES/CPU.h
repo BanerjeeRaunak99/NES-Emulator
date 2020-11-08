@@ -107,6 +107,17 @@ namespace NES
 		// Methods for the status register
 		uint8_t GetFlag(const FLAGS flags) const;
 		void SetFlag(FLAGS flags, bool value);
+
+		//struct to handle instructions
+		struct INSTRUCTION 
+		{
+			std::string name;
+			uint8_t(CPU::*operate)(void) = nullptr;
+			uint8_t(CPU::*addrmode)(void) = nullptr;
+			uint8_t cycles = 0;
+
+		};
+		std::vector<INSTRUCTION> lookup
 	};
 }
 
