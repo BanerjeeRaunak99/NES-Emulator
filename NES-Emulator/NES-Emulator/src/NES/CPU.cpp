@@ -57,7 +57,7 @@ namespace nes
 	}
 	void CPU::Clock()
 	{
-		if (m_cycles == 0)
+		if ( m_cycles == 0 )
 		{
 			m_opcode = Read(m_pc++);
 			//extract number of cycles from lookup table
@@ -192,9 +192,9 @@ namespace nes
 	}
 
 	//Fetching
-	uint8_t CPU::fetch() 
+	uint8_t CPU::fetch()
 	{
-		if (!(lookup[m_opcode].addrmode == &CPU::IMP))
+		if ( !(lookup[m_opcode].addrmode == &CPU::IMP) )
 			m_fetched = Read(m_addr_abs);
 		return m_fetched;
 
@@ -211,11 +211,11 @@ namespace nes
 	// Branching 
 	uint8_t CPU::BCS()
 	{
-		if (GetFlag(C) == 1)
+		if ( GetFlag(C) == 1 )
 		{
 			m_cycles++;
 			m_addr_abs = m_pc + m_addr_rel;
-			if((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+			if ( (m_addr_abs & 0xFF00) != (m_pc & 0xFF00) )
 				m_cycles++;
 			m_pc = m_addr_abs;
 		}
@@ -223,11 +223,11 @@ namespace nes
 	}
 	uint8_t CPU::BCC()
 	{
-		if (GetFlag(C) == 0)
+		if ( GetFlag(C) == 0 )
 		{
 			m_cycles++;
 			m_addr_abs = m_pc + m_addr_rel;
-			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+			if ( (m_addr_abs & 0xFF00) != (m_pc & 0xFF00) )
 				m_cycles++;
 			m_pc = m_addr_abs;
 		}
@@ -235,11 +235,11 @@ namespace nes
 	}
 	uint8_t CPU::BMI()
 	{
-		if (GetFlag(N) == 1)
+		if ( GetFlag(N) == 1 )
 		{
 			m_cycles++;
 			m_addr_abs = m_pc + m_addr_rel;
-			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+			if ( (m_addr_abs & 0xFF00) != (m_pc & 0xFF00) )
 				m_cycles++;
 			m_pc = m_addr_abs;
 		}
@@ -247,11 +247,11 @@ namespace nes
 	}
 	uint8_t CPU::BPL()
 	{
-		if (GetFlag(N) == 0)
+		if ( GetFlag(N) == 0 )
 		{
 			m_cycles++;
 			m_addr_abs = m_pc + m_addr_rel;
-			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+			if ( (m_addr_abs & 0xFF00) != (m_pc & 0xFF00) )
 				m_cycles++;
 			m_pc = m_addr_abs;
 		}
@@ -259,11 +259,11 @@ namespace nes
 	}
 	uint8_t CPU::BEQ()
 	{
-		if (GetFlag(Z) == 1)
+		if ( GetFlag(Z) == 1 )
 		{
 			m_cycles++;
 			m_addr_abs = m_pc + m_addr_rel;
-			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+			if ( (m_addr_abs & 0xFF00) != (m_pc & 0xFF00) )
 				m_cycles++;
 			m_pc = m_addr_abs;
 		}
@@ -271,11 +271,11 @@ namespace nes
 	}
 	uint8_t CPU::BNE()
 	{
-		if (GetFlag(Z) == 0)
+		if ( GetFlag(Z) == 0 )
 		{
 			m_cycles++;
 			m_addr_abs = m_pc + m_addr_rel;
-			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+			if ( (m_addr_abs & 0xFF00) != (m_pc & 0xFF00) )
 				m_cycles++;
 			m_pc = m_addr_abs;
 		}
@@ -283,11 +283,11 @@ namespace nes
 	}
 	uint8_t CPU::BVC()
 	{
-		if (GetFlag(V) == 0)
+		if ( GetFlag(V) == 0 )
 		{
 			m_cycles++;
 			m_addr_abs = m_pc + m_addr_rel;
-			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+			if ( (m_addr_abs & 0xFF00) != (m_pc & 0xFF00) )
 				m_cycles++;
 			m_pc = m_addr_abs;
 		}
@@ -295,23 +295,23 @@ namespace nes
 	}
 	uint8_t CPU::BVS()
 	{
-		if (GetFlag(V) == 1)
+		if ( GetFlag(V) == 1 )
 		{
 			m_cycles++;
 			m_addr_abs = m_pc + m_addr_rel;
-			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+			if ( (m_addr_abs & 0xFF00) != (m_pc & 0xFF00) )
 				m_cycles++;
 			m_pc = m_addr_abs;
 		}
 		return 0;
 	}
-	//Register manupulations
+	//Register manipulations
 	uint8_t CPU::CLC()
 	{
 		SetFlag(C, false);
 		return 0;
 	}
-	
+
 	uint8_t CPU::SEC()
 	{
 		SetFlag(C, true);
@@ -365,5 +365,84 @@ namespace nes
 		SetFlag(N, (res & 0x0080));
 	}
 
+	// Math operations
+	uint8_t CPU::ADC()
+	{
+		fetch();
+		uint16_t res = (uint16_t)m_a + (uint16_t)m_fetched + (uint16_t)GetFlag(C);
+		SetFlag(C, res > 255);
+		SetFlag(Z, (res & 0x00FF) == 0);
+		SetFlag(V, (~((uint16_t)m_a ^ (uint16_t)m_fetched) & ((uint16_t)m_a ^ (uint16_t)res)) & 0x0080);
+		SetFlag(N, res & 0x80);
+		m_a = res & 0x00FF;
 
+		return 1;
+	}
+
+	uint8_t CPU::DEC()
+	{
+		fetch();
+		uint16_t res = m_fetched - 1;
+		Write(m_addr_abs, res & 0x00FF);
+		SetFlag(Z, (res & 0x00FF) == 0x0000);
+		SetFlag(N, res & 0x0080);
+		return 0;
+	}
+
+	uint8_t CPU::DEX()
+	{
+		m_x--;
+		SetFlag(Z, m_x == 0x00);
+		SetFlag(N, m_x & 0x80);
+		return 0;
+	}
+
+	uint8_t CPU::DEY()
+	{
+		m_y--;
+		SetFlag(Z, m_y == 0x00);
+		SetFlag(N, m_y & 0x80);
+		return 0;
+	}
+
+	uint8_t CPU::INC()
+	{
+		fetch();
+		uint16_t res = m_fetched + 1;
+		Write(m_addr_abs, res & 0x00FF);
+		SetFlag(Z, (res & 0x00FF) == 0x0000);
+		SetFlag(N, res & 0x0080);
+		return 0;
+	}
+
+	uint8_t CPU::INX()
+	{
+		m_x++;
+		SetFlag(Z, m_x == 0x00);
+		SetFlag(N, m_x & 0x80);
+		return 0;
+	}
+
+	uint8_t CPU::INY()
+	{
+		m_y++;
+		SetFlag(Z, m_y == 0x00);
+		SetFlag(N, m_y & 0x80);
+		return 0;
+	}
+
+	uint8_t CPU::SBC()
+	{
+		fetch();
+		uint16_t value = ((uint16_t)m_fetched) ^ 0x00FF;
+
+		// Notice this is exactly the same as addition from here!
+		uint16_t res = (uint16_t)m_a + value + (uint16_t)GetFlag(C);
+		SetFlag(C, res & 0xFF00);
+		SetFlag(Z, ((res & 0x00FF) == 0));
+		SetFlag(V, (res ^ (uint16_t)m_a) & (res ^ value) & 0x0080);
+		SetFlag(N, res & 0x0080);
+		m_a = res & 0x00FF;
+		return 1;
+	}
 }
