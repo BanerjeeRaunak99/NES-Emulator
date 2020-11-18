@@ -208,6 +208,102 @@ namespace nes
 		SetFlag(N, m_a & 0x80);
 		return 1;
 	}
+	uint8_t CPU::BCS()
+	{
+		if (GetFlag(C) == 1)
+		{
+			m_cycles++;
+			m_addr_abs = m_pc + m_addr_rel;
+			if((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+				m_cycles++;
+			m_pc = m_addr_abs;
+		}
+		return 0;
+	}
+	uint8_t CPU::BCC()
+	{
+		if (GetFlag(C) == 0)
+		{
+			m_cycles++;
+			m_addr_abs = m_pc + m_addr_rel;
+			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+				m_cycles++;
+			m_pc = m_addr_abs;
+		}
+		return 0;
+	}
+	uint8_t CPU::BMI()
+	{
+		if (GetFlag(N) == 1)
+		{
+			m_cycles++;
+			m_addr_abs = m_pc + m_addr_rel;
+			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+				m_cycles++;
+			m_pc = m_addr_abs;
+		}
+		return 0;
+	}
+	uint8_t CPU::BPL()
+	{
+		if (GetFlag(N) == 0)
+		{
+			m_cycles++;
+			m_addr_abs = m_pc + m_addr_rel;
+			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+				m_cycles++;
+			m_pc = m_addr_abs;
+		}
+		return 0;
+	}
+	uint8_t CPU::BEQ()
+	{
+		if (GetFlag(Z) == 1)
+		{
+			m_cycles++;
+			m_addr_abs = m_pc + m_addr_rel;
+			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+				m_cycles++;
+			m_pc = m_addr_abs;
+		}
+		return 0;
+	}
+	uint8_t CPU::BNE()
+	{
+		if (GetFlag(Z) == 0)
+		{
+			m_cycles++;
+			m_addr_abs = m_pc + m_addr_rel;
+			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+				m_cycles++;
+			m_pc = m_addr_abs;
+		}
+		return 0;
+	}
+	uint8_t CPU::BVC()
+	{
+		if (GetFlag(V) == 0)
+		{
+			m_cycles++;
+			m_addr_abs = m_pc + m_addr_rel;
+			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+				m_cycles++;
+			m_pc = m_addr_abs;
+		}
+		return 0;
+	}
+	uint8_t CPU::BVS()
+	{
+		if (GetFlag(V) == 1)
+		{
+			m_cycles++;
+			m_addr_abs = m_pc + m_addr_rel;
+			if ((m_addr_abs & 0xFF00) != (m_pc & 0xFF00))
+				m_cycles++;
+			m_pc = m_addr_abs;
+		}
+		return 0;
+	}
 
 
 }
