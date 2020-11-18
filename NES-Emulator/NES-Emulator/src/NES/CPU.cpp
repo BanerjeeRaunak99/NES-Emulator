@@ -349,6 +349,7 @@ namespace nes
 		SetFlag(C, m_a >= m_fetched);
 		SetFlag(Z, (res & 0x00FF) == 0x0000);
 		SetFlag(N, (res & 0x0080));
+		return 0;
 	}
 	uint8_t CPU::CPX()
 	{
@@ -356,6 +357,7 @@ namespace nes
 		SetFlag(C, m_x >= m_fetched);
 		SetFlag(Z, (res & 0x00FF) == 0x0000);
 		SetFlag(N, (res & 0x0080));
+		return 0;
 	}
 	uint8_t CPU::CPY()
 	{
@@ -363,7 +365,97 @@ namespace nes
 		SetFlag(C, m_y >= m_fetched);
 		SetFlag(Z, (res & 0x00FF) == 0x0000);
 		SetFlag(N, (res & 0x0080));
+		return 0;
 	}
+	//storage
+	uint8_t CPU::LDA()
+	{
+		fetch();
+		m_a = m_fetched;
+		SetFlag(Z, m_a == 0x00);
+		SetFlag(N, m_a & 0x80);
+		return 1;
+
+	}
+	uint8_t CPU::LDX()
+	{
+		fetch();
+		m_x = m_fetched;
+		SetFlag(Z, m_x == 0x00);
+		SetFlag(N, m_x & 0x80);
+		return 1;
+
+	}
+	uint8_t CPU::LDY()
+	{
+		fetch();
+		m_y = m_fetched;
+		SetFlag(Z, m_y == 0x00);
+		SetFlag(N, m_y & 0x80);
+		return 1;
+
+	}
+	uint8_t CPU::STA()
+	{
+		Write(m_addr_abs, m_a);
+		return 0;
+	}
+	uint8_t CPU::STX()
+	{
+		Write(m_addr_abs, m_x);
+		return 0;
+	}
+	uint8_t CPU::STY()
+	{
+		Write(m_addr_abs, m_y);
+		return 0;
+	}
+	uint8_t CPU::TAX()
+	{
+		m_x = m_a;
+		SetFlag(Z, m_x == 0x00);
+		SetFlag(N, m_x & 0x80);
+		return 0;
+	}
+	uint8_t CPU::TAY()
+	{
+		m_y = m_a;
+		SetFlag(Z, m_y == 0x00);
+		SetFlag(N, m_y & 0x80);
+		return 0;
+	}
+	uint8_t CPU::TSX()
+	{
+		m_x = m_sp;
+		SetFlag(Z, m_x == 0x00);
+		SetFlag(N, m_x & 0x80);
+		return 0;
+	}
+	uint8_t CPU::TXA()
+	{
+		m_a = m_x;
+		SetFlag(Z, m_a == 0x00);
+		SetFlag(N, m_a & 0x80);
+		return 0;
+	}
+	uint8_t CPU::TXS()
+	{
+		m_sp = m_x;
+		SetFlag(Z, m_sp == 0x00);
+		SetFlag(N, m_sp & 0x80);
+		return 0;
+	}
+	uint8_t CPU::TYA()
+	{
+		m_a = m_y;
+		SetFlag(Z, m_a == 0x00);
+		SetFlag(N, m_a & 0x80);
+		return 0;
+	}
+
+
+
+
 
 	// Math operations
 	uint8_t CPU::ADC()
