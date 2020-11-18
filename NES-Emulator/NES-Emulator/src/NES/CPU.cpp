@@ -208,6 +208,7 @@ namespace nes
 		SetFlag(N, m_a & 0x80);
 		return 1;
 	}
+	// Branching 
 	uint8_t CPU::BCS()
 	{
 		if (GetFlag(C) == 1)
@@ -303,6 +304,65 @@ namespace nes
 			m_pc = m_addr_abs;
 		}
 		return 0;
+	}
+	//Register manupulations
+	uint8_t CPU::CLC()
+	{
+		SetFlag(C, false);
+		return 0;
+	}
+	
+	uint8_t CPU::SEC()
+	{
+		SetFlag(C, true);
+		return 0;
+	}
+	uint8_t CPU::CLD()
+	{
+		SetFlag(D, false);
+		return 0;
+	}
+	uint8_t CPU::SED()
+	{
+		SetFlag(D, true);
+		return 0;
+	}
+	uint8_t CPU::CLI()
+	{
+		SetFlag(I, false);
+		return 0;
+	}
+	uint8_t CPU::SEI()
+	{
+		SetFlag(I, true);
+		return 0;
+	}
+
+	uint8_t CPU::CLV()
+	{
+		SetFlag(V, false);
+		return 0;
+	}
+	uint8_t CPU::CMP()
+	{
+		uint16_t res = (uint16_t)m_a - (uint16_t)m_fetched;
+		SetFlag(C, m_a >= m_fetched);
+		SetFlag(Z, (res & 0x00FF) == 0x0000);
+		SetFlag(N, (res & 0x0080));
+	}
+	uint8_t CPU::CPX()
+	{
+		uint16_t res = (uint16_t)m_x - (uint16_t)m_fetched;
+		SetFlag(C, m_x >= m_fetched);
+		SetFlag(Z, (res & 0x00FF) == 0x0000);
+		SetFlag(N, (res & 0x0080));
+	}
+	uint8_t CPU::CPY()
+	{
+		uint16_t res = (uint16_t)m_y - (uint16_t)m_fetched;
+		SetFlag(C, m_y >= m_fetched);
+		SetFlag(Z, (res & 0x00FF) == 0x0000);
+		SetFlag(N, (res & 0x0080));
 	}
 
 
