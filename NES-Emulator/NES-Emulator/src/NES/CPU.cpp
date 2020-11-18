@@ -200,6 +200,14 @@ namespace nes
 
 	}
 	//Opcodes
+	uint8_t CPU::AND()
+	{
+		fetch();
+		m_a = m_a & m_fetched;
+		SetFlag(Z, m_a == 0x00);
+		SetFlag(N, m_a & 0x80);
+		return 1;
+	}
 
 
 }
