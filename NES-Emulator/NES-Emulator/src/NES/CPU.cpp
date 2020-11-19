@@ -200,14 +200,7 @@ namespace nes
 
 	}
 	//Opcodes
-	uint8_t CPU::AND()
-	{
-		fetch();
-		m_a = m_a & m_fetched;
-		SetFlag(Z, m_a == 0x00);
-		SetFlag(N, m_a & 0x80);
-		return 1;
-	}
+
 	// Branching 
 	uint8_t CPU::BCS()
 	{
@@ -537,4 +530,95 @@ namespace nes
 		m_a = res & 0x00FF;
 		return 1;
 	}
+	//Bitwise 
+	uint8_t CPU::AND()
+	{
+		fetch();
+		m_a = m_a & m_fetched;
+		SetFlag(Z, m_a == 0x00);
+		SetFlag(N, m_a & 0x80);
+		return 1;
+	}
+	uint8_t CPU::ASL()
+	{
+		fetch();
+		uint16_t temp = (uint16_t)m_fetched << 1;
+		SetFlag(C, (temp & 0xFF00) > 0);
+		SetFlag(Z, (temp & 0x00FF) == 0x00);
+		SetFlag(N, (temp & 0x80));
+		if (lookup[m_opcode].addrmode == &CPU::IMP)
+			m_a = temp & 0x00FF;
+		else
+			Write(m_addr_abs, temp & 0x00FF);
+		return 0;
+	}
+	uint8_t CPU::LSR()
+	{
+		fetch();
+		SetFlag(C, (m_fetched & 0x0001));
+		uint8_t temp = m_fetched >> 1;
+		SetFlag(Z, (temp & 0x00FF) == 0x00);
+		SetFlag(N, (temp & 0x80));
+		if (lookup[m_opcode].addrmode == &CPU::IMP)
+			m_a = temp & 0x00FF;
+		else
+			Write(m_addr_abs, temp & 0x00FF);
+		return 0;
+	}
+	uint8_t CPU::EOR()
+	{
+		fetch();
+		m_a = m_a ^ m_fetched;
+		SetFlag(Z, m_a == 0x00);
+		SetFlag(N, m_a & 0x80);
+		return 1;
+	}
+	uint8_t CPU::ORA()
+	{
+		fetch();
+		m_a = m_a | m_fetched;
+		SetFlag(Z, m_a == 0x00);
+		SetFlag(N, m_a & 0x80);
+		return 1;
+	}
+	uint8_t CPU::BIT()
+	{
+		fetch();
+		uint8_t temp = m_a & m_fetched;
+		SetFlag(Z, (temp & 0x00FF) == 0x00);
+		SetFlag(N, m_fetched & (1 << 7));
+		SetFlag(V, m_fetched & (1 << 6));
+		return 0;
+
+	}
+	uint8_t CPU::ROL()
+	{
+		fetch();
+		uint16_t temp = ((uint16_t)m_fetched << 1)|GetFlag(C);
+		SetFlag(C, (temp & 0xFF00) > 0);
+		SetFlag(Z, (temp & 0x00FF) == 0x00);
+		SetFlag(N, (temp & 0x0080));
+		if (lookup[m_opcode].addrmode == &CPU::IMP)
+			m_a = temp & 0x00FF;
+		else
+			Write(m_addr_abs, temp & 0x00FF);
+		return 0;
+	}
+	uint8_t CPU::ROL()
+	{
+		fetch();
+		uint16_t temp = (uint16_t)(GetFlag(C) << 7) | (m_fetched >> 1);
+		SetFlag(C, m_fetched & 0x01);
+		SetFlag(Z, (temp & 0x00FF) == 0x00);
+		SetFlag(N, (temp & 0x0080));
+		if (lookup[m_opcode].addrmode == &CPU::IMP)
+			m_a = temp & 0x00FF;
+		else
+			Write(m_addr_abs, temp & 0x00FF);
+		return 0;
+	}
+	//Stack
+
+	
+
 }
