@@ -618,6 +618,37 @@ namespace nes
 		return 0;
 	}
 	//Stack
+	uint8_t CPU::PHA()
+	{
+		Write(0x0100 + m_sp, m_a);
+		m_sp--;
+		return 0;
+
+	}
+	uint8_t CPU::PHP()
+	{
+		Write(0x0100 + m_sp, m_status | B0 | B1);
+		SetFlag(B0, 0);
+		SetFlag(B1, 0);
+		m_sp--;
+		return 0;
+	}
+	uint8_t CPU::PLA()
+	{
+		m_sp++;
+		m_a = Read(0x0100 + m_sp);
+		SetFlag(Z, m_a == 0x00);
+		SetFlag(N, m_a & 0x80);
+		return 0;
+
+	}
+	uint8_t CPU::PLP()
+	{
+		m_sp++;
+		m_status = Read(0x0100 + m_sp);
+		SetFlag(B1, 1);
+		return 0;
+	}
 
 	
 
