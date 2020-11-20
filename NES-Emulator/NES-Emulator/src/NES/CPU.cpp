@@ -546,7 +546,7 @@ namespace nes
 		SetFlag(C, (temp & 0xFF00) > 0);
 		SetFlag(Z, (temp & 0x00FF) == 0x00);
 		SetFlag(N, (temp & 0x80));
-		if (lookup[m_opcode].addrmode == &CPU::IMP)
+		if ( lookup[m_opcode].addrmode == &CPU::IMP )
 			m_a = temp & 0x00FF;
 		else
 			Write(m_addr_abs, temp & 0x00FF);
@@ -559,7 +559,7 @@ namespace nes
 		uint8_t temp = m_fetched >> 1;
 		SetFlag(Z, (temp & 0x00FF) == 0x00);
 		SetFlag(N, (temp & 0x80));
-		if (lookup[m_opcode].addrmode == &CPU::IMP)
+		if ( lookup[m_opcode].addrmode == &CPU::IMP )
 			m_a = temp & 0x00FF;
 		else
 			Write(m_addr_abs, temp & 0x00FF);
@@ -594,11 +594,11 @@ namespace nes
 	uint8_t CPU::ROL()
 	{
 		fetch();
-		uint16_t temp = ((uint16_t)m_fetched << 1)|GetFlag(C);
+		uint16_t temp = ((uint16_t)m_fetched << 1) | GetFlag(C);
 		SetFlag(C, (temp & 0xFF00) > 0);
 		SetFlag(Z, (temp & 0x00FF) == 0x00);
 		SetFlag(N, (temp & 0x0080));
-		if (lookup[m_opcode].addrmode == &CPU::IMP)
+		if ( lookup[m_opcode].addrmode == &CPU::IMP )
 			m_a = temp & 0x00FF;
 		else
 			Write(m_addr_abs, temp & 0x00FF);
@@ -611,7 +611,7 @@ namespace nes
 		SetFlag(C, m_fetched & 0x01);
 		SetFlag(Z, (temp & 0x00FF) == 0x00);
 		SetFlag(N, (temp & 0x0080));
-		if (lookup[m_opcode].addrmode == &CPU::IMP)
+		if ( lookup[m_opcode].addrmode == &CPU::IMP )
 			m_a = temp & 0x00FF;
 		else
 			Write(m_addr_abs, temp & 0x00FF);
@@ -650,6 +650,83 @@ namespace nes
 		return 0;
 	}
 
-	
 
+	// Jump opcodes
+	uint8_t CPU::JMP()
+	{
+		m_pc = m_addr_abs;
+		return 0;
+	}
+
+	uint8_t CPU::JSR()
+	{
+		m_pc--;
+		Write(0x0100 + m_sp, (m_pc >> 8) & 0x00FF);
+		m_sp--;
+		Write(0x0100 + m_sp, m_pc & 0x00FF);
+		m_sp--;
+
+		m_pc = m_addr_abs;
+		return 0;
+	}
+
+	uint8_t CPU::RTI()
+	{
+		m_sp++;
+		m_status = Read(0x0100 + m_sp);
+		m_status &= ~B0;
+		m_status &= ~B1;
+
+		m_sp++;
+		m_pc = (uint16_t)Read(0x0100 + m_sp);
+		m_sp++;
+		m_pc |= (uint16_t)Read(0x0100 + m_sp) << 8;
+		return 0;
+	}
+
+	uint8_t CPU::RTS()
+	{
+		m_sp++;
+		m_pc = (uint16_t)Read(0x0100 + m_sp);
+		m_sp++;
+		m_pc |= (uint16_t)Read(0x0100 + m_sp) << 8;
+		m_pc++;
+		return 0;
+	}
+
+	// System Opcodes
+	uint8_t CPU::BRK()
+	{
+		m_pc++;
+
+		SetFlag(I, 1);
+		Write(0x0100 + m_sp, (m_pc >> 8) & 0x00FF);
+		m_sp--;
+		Write(0x0100 + m_sp, m_pc & 0x00FF);
+		m_sp--;
+
+		SetFlag(B0, 1);
+		Write(0x0100 + m_sp, m_status);
+		m_sp--;
+		SetFlag(B0, 0);
+
+		m_pc = (uint16_t)Read(0xFFFE) | ((uint16_t)Read(0xFFFF) << 8);
+		return 0;
+	}
+
+	uint8_t CPU::NOP()
+	{
+		switch ( m_opcode )
+		{
+			case 0x1C:
+			case 0x3C:
+			case 0x5C:
+			case 0x7C:
+			case 0xDC:
+			case 0xFC:
+				return 1;
+				break;
+		}
+		return 0;
+	}
 }
