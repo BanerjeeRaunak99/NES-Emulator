@@ -69,6 +69,71 @@ namespace nes
 		m_cycles--;
 	}
 
+	void CPU::reset()
+	{
+		// Memory location 0xFFFC contains memory location for setting the program counter to
+		m_addr_abs = 0xFFFC;
+		m_pc = (Read(m_addr_abs) << 8) | Read(m_addr_abs + 1);
+
+		// Reset the registers
+		m_a = 0;
+		m_x = 0;
+		m_y = 0;
+		m_sp = 0xFD;
+		m_status = 0x00 | B1; // All except the unsigned bit is reset to zero
+
+		// Clear all private variables
+		m_addr_abs = 0x0000;
+		m_addr_rel = 0x0000;
+		m_fetched = 0x00;
+
+		m_cycles = 8;
+	}
+
+	void CPU::irq()
+	{
+		if ( GetFlag(I) == 0 )
+		{
+			// Pushing the program counter to the stack
+			Write(0x100 + m_sp, (m_pc >> 8) & 0x00FF);
+			m_sp--;
+			Write(0x100 + m_sp, m_pc & 0x00FF);
+			m_sp--;
+
+			SetFlag(B0, 0);
+			SetFlag(B1, 1);
+			SetFlag(I, 1);
+			Write(0x100 + m_sp, m_status);
+			m_sp--;
+
+			// New current location for the program counter
+			m_addr_abs = 0xFFFE;
+			m_pc = (Read(m_addr_abs) << 8) | Read(m_addr_abs + 1);
+
+			// Time for the IRQ to complete
+			m_cycles = 7;
+		}
+	}
+
+	void CPU::nmi()
+	{
+		Write(0x100 + m_sp, (m_pc >> 8) & 0x00FF);
+		m_sp--;
+		Write(0x100 + m_sp, m_pc & 0x00FF);
+		m_sp--;
+
+		SetFlag(B0, 0);
+		SetFlag(B1, 1);
+		SetFlag(I, 1);
+		Write(0x100 + m_sp, m_status);
+		m_sp--;
+
+		m_addr_abs = 0xFFFA;
+		m_pc = (Read(m_addr_abs) << 8) | Read(m_addr_abs + 1);
+
+		m_cycles = 8;
+	}
+
 	//Addressing modes
 	uint8_t CPU::IMP()
 	{
