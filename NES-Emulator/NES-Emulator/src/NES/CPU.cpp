@@ -794,4 +794,8 @@ namespace nes
 		}
 		return 0;
 	}
+	uint8_t CPU::XXX()
+	{
+		return 0;
+	}
 }
